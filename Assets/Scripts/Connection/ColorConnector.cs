@@ -1,3 +1,4 @@
+using Camera;
 using UnityEngine;
 
 
@@ -5,15 +6,15 @@ namespace Connection
 {
     public class ColorConnector : MonoBehaviour
     {
-        [Header("Settings")] [SerializeField] private float maxLength;
+        [Header("Settings")] 
+        [SerializeField] private float maxLength;
 
-        [Header("Components")] [SerializeField]
-        private Transform lineTransform;
-
+        [Header("Components")] 
+        [SerializeField] private Transform lineTransform;
         [SerializeField] private SpriteRenderer lineSpriteRenderer;
 
         public Color Color => lineSpriteRenderer.color;
-        
+
         public bool CanFinishConnecting { get; private set; }
 
         private Vector2 _startPoint;
@@ -38,7 +39,7 @@ namespace Connection
             if (!_isConnecting)
                 return;
 
-            UpdateParameters(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+            UpdateParameters(CameraHolder.Instance.MainCamera.ScreenToWorldPoint(Input.mousePosition));
         }
 
         private void UpdateGeometry()
@@ -65,7 +66,7 @@ namespace Connection
             _isConnecting = true;
 
             lineSpriteRenderer.color = color;
-            UpdateParameters(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+            UpdateParameters(CameraHolder.Instance.MainCamera.ScreenToWorldPoint(Input.mousePosition));
         }
 
         public void FinishConnecting(Vector2 finishPosition)

@@ -1,7 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Events;
+using Player;
 using Player.ActionHandlers;
 using UnityEngine;
 
@@ -11,9 +11,10 @@ namespace Connection
     public class ColorConnectionManager : MonoBehaviour
     {
         [SerializeField] private GameObject colorNodesContainer;
-        [SerializeField] private ClickHandler clickHandler;
         [SerializeField] private ColorConnector colorConnector;
 
+        private ClickHandler _clickHandler;
+        
         private readonly ColorConnectionHistoryHandler _historyHandler = new();
 
         private ColorNode[] _nodes;
@@ -36,12 +37,13 @@ namespace Connection
                 _completionsByTargetNode[nodeTarget] = nodeTarget.IsCompleted;
             }
 
-            clickHandler.SetDragEventHandlers(OnDragStart, OnDragEnd);
+            _clickHandler = ClickHandler.Instance;
+            _clickHandler.SetDragEventHandlers(OnDragStart, OnDragEnd);
         }
 
         private void OnDestroy()
         {
-            clickHandler.ClearEvents();
+            _clickHandler.ClearEvents();
         }
 
         private void StartConnecting(ColorNode colorNode)
@@ -71,7 +73,7 @@ namespace Connection
             Destroy(_currentColorConnector.gameObject);
         }
 
-        private bool TryGetColorNodeInPosition(Vector3 position, out ColorNode result)
+        public bool TryGetColorNodeInPosition(Vector2 position, out ColorNode result)
         {
             foreach (var colorNode in _nodes)
             {
@@ -113,12 +115,18 @@ namespace Connection
 
         private void OnDragStart(Vector3 startPosition)
         {
+            if (PlayerController.PlayerState != PlayerState.Connecting)
+                return;
+
             if (TryGetColorNodeInPosition(startPosition, out var colorNode) && !colorNode.IsEmpty)
                 StartConnecting(colorNode);
         }
 
         private void OnDragEnd(Vector3 finishPosition)
         {
+            if (PlayerController.PlayerState != PlayerState.Connecting)
+                return;
+
             if (_currentColorConnector == null)
                 return;
 

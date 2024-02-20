@@ -1,19 +1,19 @@
-using UnityEngine;
+using Utils.Singleton;
 
 
 namespace Player
 {
-    public class PlayerController : MonoBehaviour
+    public class PlayerController : DontDestroyMonoBehaviour
     {
         public static PlayerState PlayerState { get; private set; }
-        
+
         private PlayerSateObserver _observer;
 
-        private bool _canChangeState;
 
-
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             _observer = new PlayerSateObserver(SetPlayerState);
             _observer.Subscribe();
         }
@@ -25,8 +25,7 @@ namespace Player
 
         private void SetPlayerState(PlayerState playerState)
         {
-            if (_canChangeState)
-                PlayerState = playerState;
+            PlayerState = playerState;
         }
     }
 }
