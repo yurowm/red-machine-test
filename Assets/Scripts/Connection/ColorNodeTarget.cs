@@ -27,7 +27,13 @@ namespace Connection
 
         private void OnColorChanged(Color currentColor)
         {
-            TargetCompletionChangeEvent?.Invoke(this, targetColor == currentColor);
+            // не понял, как подогнать цвета чтобы они на 100% совпадали,
+            // поэтому допустил небольшую погрешность
+            var delta = 
+                Mathf.Abs(targetColor.r - currentColor.r) + 
+                Mathf.Abs(targetColor.g - currentColor.g) + 
+                Mathf.Abs(targetColor.b - currentColor.b); 
+            TargetCompletionChangeEvent?.Invoke(this, delta <= 0.01f);
         }
 
         private void OnValidate()

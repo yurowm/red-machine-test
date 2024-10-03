@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Events;
@@ -44,6 +45,15 @@ namespace Connection
         private void OnDestroy()
         {
             _clickHandler.RemoveDragEventHandlers(OnDragStart, OnDragEnd);
+        }
+
+        private void Update() 
+        {
+            if (Application.isEditor && Input.GetKeyDown(KeyCode.S))
+            {
+                Debug.Log("Level skipped");
+                EventsController.Fire(new EventModels.Game.TargetColorNodesFilled());   
+            }
         }
 
         private void StartConnecting(ColorNode colorNode)
