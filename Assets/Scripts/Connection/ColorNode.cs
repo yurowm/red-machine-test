@@ -1,4 +1,5 @@
 using System;
+using Events;
 using Player.ActionHandlers;
 using UnityEngine;
 
@@ -21,10 +22,21 @@ namespace Connection
 
         private Bounds _bounds;
         
+        public Bounds Bounds => _bounds;
 
         private void Awake()
         {
             _bounds = spriteRenderer.bounds;
+        }
+
+        private void OnEnable()
+        {
+            EventsController.Fire(new ColorNodeEnable(this));
+        }
+
+        private void OnDisable() 
+        {
+            EventsController.Fire(new ColorNodeDisable(this));
         }
 
         public bool IsInBounds(Vector3 point)
